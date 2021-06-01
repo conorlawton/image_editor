@@ -1,0 +1,26 @@
+{
+  "name": "image_editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "node -r esm app/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^9.1.1",
+    "typescript": "^4.2.4",
+    "webgl-strict-types": "^1.0.4",
+    "webpack": "^5.35.1",
+    "webpack-cli": "^4.6.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "node-static": "^0.7.11"
+  }
+}

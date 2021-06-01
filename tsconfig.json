@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "app",
+		"sourceMap": true,
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+  },
+  "include": [
+    "node_modules/webgl-strict-types/index.d.ts",
+    "index.d.ts",
+    "src/**/*.ts"
+  ]
+}
