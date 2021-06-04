@@ -177,6 +177,7 @@ export default class Quaternion {
 		let wy = w * y2;
 		let wz = w * z2;
 		
+		// TODO: remove the transpose
 		return new Matrix4x4(
 			new Vector4(1 - yy - zz,	yx + wz,	zx - wy,	0),
 			new Vector4(yx - wz,	1 - xx - zz,	zy + wx,	0),

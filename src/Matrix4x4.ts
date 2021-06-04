@@ -186,10 +186,10 @@ export default class Matrix4x4 {
 	public static scale(vector: Vector3): Matrix4x4 {
 		const m = new Matrix4x4();
 		
-		m.m00 = vector.x; 	m.m01 = 0; 	m.m02 = 0; 	m.m03 = 0;
-		m.m10 = 0; 	m.m11 = vector.y; 	m.m12 = 0; 	m.m13 = 0;
-		m.m20 = 0; 	m.m21 = 0; 	m.m22 = vector.z; 	m.m23 = 0;
-		m.m30 = 0; 	m.m31 = 0; 	m.m32 = 0; 	m.m33 = 1;
+		m.m00 = vector.x; 	m.m10 = 0; 	m.m20 = 0; 	m.m30 = 0;
+		m.m01 = 0; 	m.m11 = vector.y; 	m.m21 = 0; 	m.m31 = 0;
+		m.m02 = 0; 	m.m12 = 0; 	m.m22 = vector.z; 	m.m32 = 0;
+		m.m03 = 0; 	m.m13 = 0; 	m.m23 = 0; 	m.m33 = 1;
 
 		return m;
 	}
@@ -197,10 +197,10 @@ export default class Matrix4x4 {
 	public static translate(vector: Vector3): Matrix4x4 {
 		const m = new Matrix4x4();
 		
-		m.m00 = 1; m.m01 = 0; m.m02 = 0; m.m03 = vector.x;
-		m.m10 = 0; m.m11 = 1; m.m12 = 0; m.m13 = vector.y;
-		m.m20 = 0; m.m21 = 0; m.m22 = 1; m.m23 = vector.z;
-		m.m30 = 0; m.m31 = 0; m.m32 = 0; m.m33 = 1;
+		m.m00 = 1; m.m10 = 0; m.m20 = 0; m.m30 = vector.x;
+		m.m01 = 0; m.m11 = 1; m.m21 = 0; m.m31 = vector.y;
+		m.m02 = 0; m.m12 = 0; m.m22 = 1; m.m32 = vector.z;
+		m.m03 = 0; m.m13 = 0; m.m23 = 0; m.m33 = 1;
 
 		return m;
 	}
@@ -368,10 +368,6 @@ export default class Matrix4x4 {
 
 	public transposed(): Matrix4x4 {
 		return new Matrix4x4(
-			// new Vector4(this.m00, this.m01, this.m02, this.m03),
-			// new Vector4(this.m10, this.m11, this.m12, this.m13),
-			// new Vector4(this.m20, this.m21, this.m22, this.m23),
-			// new Vector4(this.m30, this.m31, this.m32, this.m33)
 			new Vector4(this.m00, this.m10, this.m20, this.m30),
 			new Vector4(this.m01, this.m11, this.m21, this.m31),
 			new Vector4(this.m02, this.m12, this.m22, this.m32),

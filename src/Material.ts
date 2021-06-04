@@ -42,6 +42,9 @@ export default class Material {
 	public readonly buffers: { [index: string]: WebGLBuffer };
 	public readonly uniform_setters: { [index: string]: (data: number[]) => void };
 
+	public active_attribute_count: number;
+	public attribute_info: { [index: string]: { info: WebGLActiveInfo, location: number, size: number } };
+
 	constructor(
 		gl: WebGL2RenderingContext,
 		vertex_shader: string,
@@ -64,7 +67,22 @@ export default class Material {
 
 		this.program = this.create_program()!;
 		gl.useProgram(this.program);
+
 		this.vertex_array = gl.createVertexArray()!;
+
+		this.attribute_info = {};
+		this.active_attribute_count = this.gl.getProgramParameter(this.program, WebGL2RenderingContext.ACTIVE_ATTRIBUTES);
+		for (let i = 0; i < this.active_attribute_count; i++) {
+			const attribute_info: WebGLActiveInfo = this.gl.getActiveAttrib(this.program, i)!;
+			const attribute_location: number = this.gl.getAttribLocation(this.program, attribute_info.name);
+			this.attribute_info[attribute_info.name] = {
+				info: attribute_info,
+				location: attribute_location,
+				size: attribute_data[attribute_info.name].size
+			};
+			this.buffers[attribute_info.name] = this.gl.createBuffer()!;
+		}
+
 		this.bind_attribute_data(attribute_data);
 
 		this.uniform_setters = {};
@@ -72,6 +90,7 @@ export default class Material {
 		if (uniform_data) {
 			this.bind_uniform_data(uniform_data);
 		}
+
 	}
 
 	private create_shader(type: number, source: string): WebGLShader | undefined {
@@ -111,39 +130,68 @@ export default class Material {
 	}
 
 	public bind_attribute_data(attributes: AttributeData) {
-		const active_attribute_count = this.gl.getProgramParameter(this.program, WebGL2RenderingContext.ACTIVE_ATTRIBUTES);
-		for (let i = 0; i < active_attribute_count; i++) {
-			const attribute_info: WebGLActiveInfo = this.gl.getActiveAttrib(this.program, i)!;
 
-			// WebGL Boilerplate for creating and binding active buffer
-			const buffer = this.gl.createBuffer()!;
+		for(let attribute_name in attributes) {
+			const attribute_info = this.attribute_info[attribute_name];
+			const buffer = this.buffers[attribute_name];
 
-			this.buffers[attribute_info.name] = buffer;
 			this.gl.bindBuffer(
 				WebGL2RenderingContext.ARRAY_BUFFER,
 				buffer
 			);
-
+			
 			this.gl.bufferData(
 				WebGL2RenderingContext.ARRAY_BUFFER,
-				new JS_GL_Typed_Array[attribute_info.type](attributes[attribute_info.name].data),
+				new JS_GL_Typed_Array[attribute_info.info.type](attributes[attribute_name].data),
 				WebGL2RenderingContext.STATIC_DRAW
 			);
 
-			const attrib_loc = this.gl.getAttribLocation(this.program, attribute_info.name);
+			//const attrib_loc = this.gl.getAttribLocation(this.program, attribute_name);
 
-			// TODO: Default normalised, stride, and offset
 			this.gl.vertexAttribPointer(
-				attrib_loc,
-				attributes[attribute_info.name].size,
-				WebGL2RenderingContext.FLOAT, //attribute_info.type,
+				attribute_info.location,
+				attribute_info.size,
+				WebGL2RenderingContext.FLOAT, //this.attribute_info[attribute_name].type,
 				false,
 				0,
 				0
-			);
 
-			this.gl.enableVertexAttribArray(attrib_loc);
+			);
+			this.gl.enableVertexAttribArray(attribute_info.location);
 		}
+
+		// for (let i = 0; i < this.active_attribute_count; i++) {
+		// 	const attribute_info: WebGLActiveInfo = this.gl.getActiveAttrib(this.program, i)!;
+
+		// 	// WebGL Boilerplate for creating and binding active buffer
+		// 	let buffer = this.buffers[attribute_info.name] ?? this.gl.createBuffer()!
+
+		// 	this.buffers[attribute_info.name] = buffer;
+		// 	this.gl.bindBuffer(
+		// 		WebGL2RenderingContext.ARRAY_BUFFER,
+		// 		buffer
+		// 	);
+
+		// 	this.gl.bufferData(
+		// 		WebGL2RenderingContext.ARRAY_BUFFER,
+		// 		new JS_GL_Typed_Array[attribute_info.type](attributes[attribute_info.name].data),
+		// 		WebGL2RenderingContext.STATIC_DRAW
+		// 	);
+
+		// 	const attrib_loc = this.gl.getAttribLocation(this.program, attribute_info.name);
+
+		// 	// TODO: Default normalised, stride, and offset
+		// 	this.gl.vertexAttribPointer(
+		// 		attrib_loc,
+		// 		attributes[attribute_info.name].size,
+		// 		WebGL2RenderingContext.FLOAT, //attribute_info.type,
+		// 		false,
+		// 		0,
+		// 		0
+		// 	);
+
+		// 	this.gl.enableVertexAttribArray(attrib_loc);
+		// }
 	}
 
 	public bind_uniform_data(uniforms: UniformData) {

@@ -29,9 +29,7 @@ export default class Camera {
 		if (!view_matrix) throw new Error("cam_matrix not invertible");
 		const view_projection_matrix = Matrix4x4.multiply(projection_matrix, view_matrix);
 
-		//const rotation = Quaternion.from_euler(Vector3.zero).to_rotation_matrix();
-
-		this.matrix = view_projection_matrix; //Matrix4x4.multiply(rotation, view_projection_matrix);
+		this.matrix = view_projection_matrix;
 	}
 }
 
