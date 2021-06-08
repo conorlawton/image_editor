@@ -179,10 +179,6 @@ export default class Cube {
 			{
 				"a_pos": {data: this.mesh, size: 3},
 				"a_uv": {data: this.UVs, size: 2}
-			},
-			{
-				"u_matrix": { data: Matrix4x4.identity().to_array() },
-				"u_texture": { data: [0] }
 			}
 		);
 	}

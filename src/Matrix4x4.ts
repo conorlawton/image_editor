@@ -264,6 +264,21 @@ export default class Matrix4x4 {
 		return res;
 	}
 
+	// Realtime Rendering 4th Edition, Page 95, (Fig 4.63)
+	public static orthographic(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4x4 {
+		const res = new Matrix4x4();
+
+		res.m00 = 2 / (right - left);
+		res.m11 = 2 / (top - bottom);
+		res.m22 = 2 / (far - near);
+		res.m30 = -((right + left) / (right - left));
+		res.m31 = -((top + bottom) / (top - bottom));
+		res.m32 = -((far + near) / (far - near));
+		res.m33 = 1;
+
+		return res;
+	}
+
 	// http://blog.acipo.com/matrix-inversion-in-javascript/
 	public inverse(): Matrix4x4 | undefined {
 		const I = Matrix4x4.identity().copy();

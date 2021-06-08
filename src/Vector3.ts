@@ -9,10 +9,11 @@ export default class Vector3 {
 		this.z = z ?? 0;
 	}
 
-	public add_vec(other: Vector3) {
+	public add_vec(other: Vector3): Vector3 {
 		this.x += other.x;
 		this.y += other.y;
 		this.z += other.z;
+		return this;
 	}
 
 	public add(x: number, y: number, z: number) {
@@ -31,6 +32,14 @@ export default class Vector3 {
 		this.z *= other.z;
 	}
 
+	public set_magnitude(magnitude: number): Vector3 {
+		this.normalise();
+		this.x *= magnitude;
+		this.y *= magnitude;
+		this.z *= magnitude;
+		return this;
+	}
+
 	public magnitude(): number {
 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
 	}
@@ -42,6 +51,13 @@ export default class Vector3 {
 	public normalised(): Vector3 {
 		const mag = this.magnitude();
 		return new Vector3(this.x / mag, this.y / mag, this.z / mag);
+	}
+
+	public normalise() {
+		const mag = this.magnitude();
+		this.x /= mag;
+		this.y /= mag;
+		this.z /= mag;
 	}
 
 	public static cross(a: Vector3, b: Vector3): Vector3 {
@@ -65,5 +81,13 @@ export default class Vector3 {
 	}
 	public static zero(): Vector3 {
 		return <Vector3>{ x: 0, y: 0, z: 0 };
-	} 
+	}
+
+	public to_array(): number[] {
+		return [this.x, this.y, this.z];
+	}
+
+	public clone(): Vector3 {
+		return new Vector3(this.x, this.y, this.z);
+	}
 }

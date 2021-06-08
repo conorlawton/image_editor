@@ -23,7 +23,9 @@ export default class Camera {
 
 	public set_aspect_ratio(aspect_ratio: number) {
 
-		const projection_matrix = Matrix4x4.perspective(deg2rad(60), aspect_ratio, 1, 2000);
+		//const projection_matrix = Matrix4x4.perspective(deg2rad(60), aspect_ratio, 1, 2000);
+		
+		const projection_matrix = Matrix4x4.orthographic(-aspect_ratio, aspect_ratio, -1, 1, 0, -100);
 		const cam_matrix = Matrix4x4.look_at(this.position, this.target, this.up);
 		const view_matrix = cam_matrix.inverse();
 		if (!view_matrix) throw new Error("cam_matrix not invertible");
@@ -32,5 +34,3 @@ export default class Camera {
 		this.matrix = view_projection_matrix;
 	}
 }
-
-

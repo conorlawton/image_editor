@@ -32,6 +32,10 @@ export default class Vector4 {
 		this.z *= other.z;
 		this.w *= other.w;
 	}
+
+	public to_array() {
+		return [this.x, this.y, this.z, this.w];
+	}
 	
 	static readonly zero: Vector4 = <Vector4>{x: 0, y: 0, z: 0, w: 0};
 }

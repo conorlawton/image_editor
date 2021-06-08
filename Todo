@@ -1,0 +1,6 @@
+Create an asset manager?
+Mark materials as shared in order to batch draw calls
+	We don't need to change textures for every object that shares a textures
+
+Move matrices maths to the shader so we don't need to do it CPU side
+Cache more stuff in Materials

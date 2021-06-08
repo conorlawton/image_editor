@@ -4,6 +4,7 @@ import Camera from "./Camera";
 import Quad from "./Quad";
 import Cube from "./Cube";
 import Quaternion from "./Quaternion";
+import DebugDraw from "./DebugDraw";
 
 const canvas: HTMLCanvasElement = document.getElementById("draw") as HTMLCanvasElement;
 const context = canvas.getContext("webgl2");
@@ -26,22 +27,12 @@ window.addEventListener("resize", () => {
 	camera.set_aspect_ratio(innerWidth / innerHeight);
 });
 
+const quad = new Quad(context);
+quad.transform.position.z -= 10;
+quad.transform.dirty = true;
 
+const debug = new DebugDraw(context);
 
-const cubes: Cube[] = [];
-
-for (let x = -5; x < 5; x++) {
-
-	for (let y = -5; y < 5; y++) {
-
-		for (let z = -10; z < 0; z++) {
-			const cube = new Cube(context);
-			cube.transform.position = new Vector3(x / 5, y / 5, z / 5);
-			cube.transform.scale = new Vector3(0.1, 0.1, 0.1);
-			cubes.push(cube);
-		}
-	}
-}
 
 context.viewport(0, 0, canvas.width, canvas.height);
 context.clearColor(0, 0, 0, 0);
@@ -60,11 +51,15 @@ const draw = function (now: number) {
 
 	context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
-	camera.rotate(Quaternion.from_euler(new Vector3(0, 1 * delta_time, 0)));
+	//camera.rotate(Quaternion.from_euler(new Vector3(0, 1 * delta_time, 0)));
 
-	for (let i = 0; i < cubes.length; i++) {
-		cubes[i].draw(context, delta_time, camera);
-	}
+	// for (let i = 0; i < cubes.length; i++) {
+	// 	cubes[i].draw(context, delta_time, camera);
+	// }
+
+	quad.draw(context, delta_time, camera);
+
+	debug.ray(camera, new Vector3(0, 0, 0), new Vector3(1, -1, -1), 3);
 
 	requestAnimationFrame(draw);
 }

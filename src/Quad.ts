@@ -64,8 +64,8 @@ export default class Quad {
 		}
 		`;
 
-		const texture_options: Texture.AllocateTextureOptions = { border: 0, internal_format: gl.R8, type: gl.UNSIGNED_BYTE, format: gl.RED };
-		this.texture = Texture.allocate_texture(gl, 3, 2, 0, new Uint8Array([128, 10, 255, 255, 128, 10]), texture_options)!;
+		const texture_options: Texture.AllocateTextureOptions = { border: 0, internal_format: gl.RGB8, type: gl.UNSIGNED_BYTE, format: gl.RGB };
+		this.texture = Texture.allocate_texture(gl, 2, 1, 0, new Uint8Array([128, 10, 255, 255, 128, 10]), texture_options)!;
 		this.frame_buffer = Texture.attach_tex_to_frame_buffer(gl, this.texture, 0)!;
 
 		this.index_buffer = gl.createBuffer()!;
@@ -81,19 +81,12 @@ export default class Quad {
 			{
 				"a_pos": {data: this.mesh, size: 2},
 				"a_uv": {data: this.UVs, size: 2}
-			},
-			{
-				"u_matrix": { data: Matrix4x4.identity().to_array() },
-				"u_texture": { data: [0] }
 			}
 		);
 	}
 
 	public draw(gl: WebGL2RenderingContext, delta_time: number, camera: Camera) {
 		
-		this.transform.rotation.add(0, delta_time, 0);
-		this.transform.dirty = true;
-
 		this.material.use(gl);
 		
 		this.material.bind_attribute_data(

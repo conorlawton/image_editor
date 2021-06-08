@@ -1,9 +1,8 @@
 export default class AssetManager {
-
+	
 }
 
-class Asset {
+class Asset<T> {
 	shared: boolean;
-	refCount: number;
-	
+	asset: T
 }
