@@ -4,3 +4,13 @@ Mark materials as shared in order to batch draw calls
 
 Move matrices maths to the shader so we don't need to do it CPU side
 Cache more stuff in Materials
+
+Implement physics ray-casting and triangle intersections
+Figure out how to draw to a texture
+	Refer to attempt at portfolio project for texture redrawing?
+
+
+Per transformation matrix component caching
+	No need to recreate the rotation matrix if the rotation hasn't changed
+
+Create a dirty proxy to make marking components as dirty easier

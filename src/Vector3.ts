@@ -22,6 +22,24 @@ export default class Vector3 {
 		this.z += z;
 	}
 
+	public static add_vec(a: Vector3, b: Vector3) {
+		return new Vector3(
+			a.x + b.x,
+			a.y + b.y,
+			a.z + b.z,
+		);
+	}
+
+
+	public static add(vec: Vector3, x?: number, y?: number, z?: number) {
+		return new Vector3(
+			vec.x + x ?? 0,
+			vec.y + y ?? 0,
+			vec.z + z ?? 0,
+		);
+	}
+
+
 	public static sub(a: Vector3, b: Vector3): Vector3 {
 		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 	}
@@ -30,6 +48,13 @@ export default class Vector3 {
 		this.x *= other.x;
 		this.y *= other.y;
 		this.z *= other.z;
+	}
+
+	public scale_number(value: number): Vector3 {
+		this.x *= value;
+		this.y *= value;
+		this.z *= value;
+		return this;
 	}
 
 	public set_magnitude(magnitude: number): Vector3 {

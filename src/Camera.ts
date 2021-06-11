@@ -2,35 +2,34 @@ import Vector3 from "./Vector3";
 import Matrix4x4 from "./Matrix4x4";
 import Quaternion from "./Quaternion";
 import { deg2rad } from "./MathUtils";
+import Vector2 from "./Vector2";
+import Ray from "./Ray";
+import Transform from "./Transform";
 
 export default class Camera {
-	position: Vector3;
-	up: Vector3;
-	target: Vector3;
-	matrix: Matrix4x4;
+	public dirty: boolean;
+	public transform: Transform;
+	public clip_matrix: Matrix4x4;
+	public aspect_ratio: number;
+	private rotation_matrix: Matrix4x4;
+	private projection_matrix: Matrix4x4;
 
 	constructor(aspect_ratio: number) {
-		this.position = new Vector3(0, 0, 2);
-		this.up = new Vector3(0, 1, 0);
-		this.target = new Vector3(0, 0, 0);
+		this.transform = new Transform();
 
-		this.set_aspect_ratio(aspect_ratio);
+		this.aspect_ratio = aspect_ratio;
 	}
 
-	public rotate(rotation: Quaternion) {
-		this.matrix = Matrix4x4.multiply(this.matrix, rotation.to_rotation_matrix());
-	}
-
-	public set_aspect_ratio(aspect_ratio: number) {
-
-		//const projection_matrix = Matrix4x4.perspective(deg2rad(60), aspect_ratio, 1, 2000);
+	public update() {
+		if (this.dirty) {
+			this.rotation_matrix = Matrix4x4.from_rotation(Quaternion.from_euler(this.transform.rotation));
+			this.projection_matrix = Matrix4x4.perspective(deg2rad(60), this.aspect_ratio, 1, 2000);
+		}
 		
-		const projection_matrix = Matrix4x4.orthographic(-aspect_ratio, aspect_ratio, -1, 1, 0, -100);
-		const cam_matrix = Matrix4x4.look_at(this.position, this.target, this.up);
-		const view_matrix = cam_matrix.inverse();
+		const view_matrix = this.transform.getMatrix().inverse();
+		
 		if (!view_matrix) throw new Error("cam_matrix not invertible");
-		const view_projection_matrix = Matrix4x4.multiply(projection_matrix, view_matrix);
-
-		this.matrix = view_projection_matrix;
+		const view_projection_matrix = Matrix4x4.multiply(this.projection_matrix, view_matrix);
+		this.clip_matrix = view_projection_matrix;
 	}
 }

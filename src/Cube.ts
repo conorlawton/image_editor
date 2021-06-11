@@ -199,7 +199,7 @@ export default class Cube {
 		
 		this.material.bind_uniform_data(
 			{
-				"u_matrix": { data: (Matrix4x4.multiply(camera.matrix, this.transform.getMatrix()).to_array()) },
+				"u_matrix": { data: (Matrix4x4.multiply(camera.clip_matrix, this.transform.getMatrix()).to_array()) },
 				"u_texture": { data: [0] }
 			}
 		);

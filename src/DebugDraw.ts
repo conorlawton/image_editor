@@ -28,7 +28,7 @@ export default class DebugDraw {
 		}
 		`
 		this.material = new Material(gl, vertex_shader_source, fragment_shader_source, {
-			"a_pos": {data: [], size: 3}			
+			"a_pos": {data: [], size: 3}		
 		});
 	}
 
@@ -47,7 +47,7 @@ export default class DebugDraw {
 
 		this.material.bind_uniform_data({
 			"u_colour": { data: colour.to_array() },
-			"u_matrix": { data: Matrix4x4.multiply(camera.matrix, Matrix4x4.translate(origin)).to_array() }
+			"u_matrix": { data: Matrix4x4.multiply(camera.clip_matrix, Matrix4x4.translate(origin)).to_array() }
 		});
 
 		this.gl.drawArrays(WebGL2RenderingContext.LINES, 0, 2);

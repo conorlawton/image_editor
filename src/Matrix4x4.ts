@@ -337,6 +337,38 @@ export default class Matrix4x4 {
 		return I;
 	}
 
+	// https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
+	public to_quaternion(): Quaternion {
+		let t: number;
+		let q: Quaternion;
+
+		if (this.m22 < 0.0) {
+			if (this.m00 > this.m11) {
+				t = 1.0 + this.m00 - this.m11 - this.m22;
+				q = new Quaternion(t, this.m10 + this.m01, this.m02 + this.m20, this.m21 - this.m12);
+			} else {
+				t = 1.0 - this.m00 + this.m11 - this.m22;
+				q = new Quaternion(this.m10 + this.m01, t, this.m21 + this.m12, this.m02 - this.m20);
+			}
+		} else {
+			if (this.m00 < -this.m11) {
+				t = 1.0 - this.m00 - this.m11 + this.m22;
+				q = new Quaternion(this.m02 + this.m20, this.m21 + this.m12, t, this.m10 - this.m01);
+			} else {
+				t = 1.0 + this.m00 + this.m11 + this.m22;
+				q = new Quaternion(this.m21 - this.m12, this.m02 - this.m20, this.m10 - this.m01, t);
+			}
+		}
+
+		const v = 0.5 / Math.sqrt(t);
+		q.x *= v;
+		q.y *= v;
+		q.z *= v;
+		q.w *= v;
+
+		return q;
+	}
+
 	public static look_at(from: Vector3, to: Vector3, world_up: Vector3): Matrix4x4 {
 		const z_axis: Vector3 = Vector3.sub(from, to).normalised(); // Z
 		const x_axis: Vector3 = Vector3.cross(world_up, z_axis).normalised(); // X

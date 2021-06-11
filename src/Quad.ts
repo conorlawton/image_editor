@@ -65,7 +65,7 @@ export default class Quad {
 		`;
 
 		const texture_options: Texture.AllocateTextureOptions = { border: 0, internal_format: gl.RGB8, type: gl.UNSIGNED_BYTE, format: gl.RGB };
-		this.texture = Texture.allocate_texture(gl, 2, 1, 0, new Uint8Array([128, 10, 255, 255, 128, 10]), texture_options)!;
+		this.texture = Texture.allocate_texture(gl, 16, 16, 0, new Uint8Array(new Array(16*16*3).fill(255)), texture_options)!;
 		this.frame_buffer = Texture.attach_tex_to_frame_buffer(gl, this.texture, 0)!;
 
 		this.index_buffer = gl.createBuffer()!;
@@ -86,7 +86,7 @@ export default class Quad {
 	}
 
 	public draw(gl: WebGL2RenderingContext, delta_time: number, camera: Camera) {
-		
+
 		this.material.use(gl);
 		
 		this.material.bind_attribute_data(
@@ -97,7 +97,7 @@ export default class Quad {
 		);
 		this.material.bind_uniform_data(
 			{
-				"u_matrix": { data: (Matrix4x4.multiply(camera.matrix, this.transform.getMatrix()).to_array()) },
+				"u_matrix": { data: (Matrix4x4.multiply(camera.clip_matrix, this.transform.getMatrix()).to_array()) },
 				"u_texture": { data: [0] }
 			}
 		);

@@ -87,10 +87,6 @@ export default class Quaternion {
 		return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
 	}
 
-	public set_look_rotation(view: Vector3, up: Vector3) {
-
-	}
-
 	public static angle(left: Quaternion, right: Quaternion): number {
 		const dot = Quaternion.dot(left, right);
 		return Quaternion.is_equal_using_dot(dot) ? 0 : Math.acos(Math.min(Math.abs(dot), 1)) * 2 * (360 / (Math.PI * 2));
@@ -158,44 +154,30 @@ export default class Quaternion {
 
 	// https://automaticaddison.com/how-to-convert-a-quaternion-to-a-rotation-matrix/
 	public to_rotation_matrix(): Matrix4x4 {
+		// Precalculate coordinate products
+		const x: number = this.x * 2;
+		const y: number = this.y * 2;
+		const z: number = this.z * 2;
+		const xx: number = this.x * x;
+		const yy: number = this.y * y;
+		const zz: number = this.z * z;
+		const xy: number = this.x * y;
+		const xz: number = this.x * z;
+		const yz: number = this.y * z;
+		const wx: number = this.w * x;
+		const wy: number = this.w * y;
+		const wz: number = this.w * z;
 
-		let x = this.x,
-    y = this.y ,
-    z = this.z ,
-    w = this.w ;
-		
-		let x2 = x + x;
-		let y2 = y + y;
-		let z2 = z + z;
-		let xx = x * x2;
-		let yx = y * x2;
-		let yy = y * y2;
-		let zx = z * x2;
-		let zy = z * y2;
-		let zz = z * z2;
-		let wx = w * x2;
-		let wy = w * y2;
-		let wz = w * z2;
-		
-		// TODO: remove the transpose
-		return new Matrix4x4(
-			new Vector4(1 - yy - zz,	yx + wz,	zx - wy,	0),
-			new Vector4(yx - wz,	1 - xx - zz,	zy + wx,	0),
-			new Vector4(zx + wy,	zy - wx,	1 - xx - yy,	0),
-			new Vector4(0,	0,	0,	1),
-		).transposed();
+		// Calculate 3x3 matrix from orthonormal basis
+		const m = new Matrix4x4();
 
-		// // Scalar
-		// // const norm = this.norm();
-		// // const s = 2 / (norm * norm);
-		// const s = 2 / (this.square_norm());
+		m.m00 = 1 - (yy + zz);	m.m10 = xy + wz;	m.m20 = xz - wy;
+		m.m01 = xy - wz;	m.m11 = 1 - (xx + zz);	m.m21 = yz + wx;
+		m.m02 = xz + wy;	m.m12 = yz - wx;	m.m22 = 1 - (xx + yy);
 
-		// return new Matrix4x4(
-		// 	new Vector4(1 - s * (this.y * this.y + this.z * this.z),	s * (this.z * this.y + this.w * this.z),	s * (this.z * this.z - this.w * this.y), 	0),
-		// 	new Vector4(s * (this.x * this.y - this.w * this.z),	1 - s * (this.x * this.x + this.z * this.z),	s * (this.y * this.z + this.w * this.x),	0),
-		// 	new Vector4(s * (this.x * this.z + this.w * this.y),	s * (this.y * this.z - this.w * this.x), 	1 - s * (this.x * this.x + this.y * this.y),	0),
-		// 	new Vector4(0,	0,	0,	1),
-		// );
+		m.m33 = 1;
+
+		return m;
 	}
 
 	public conjugated(): Quaternion {

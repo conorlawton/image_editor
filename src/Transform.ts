@@ -39,7 +39,7 @@ export default class Transform {
 		if (this.dirty) {
 			let m = Matrix4x4.identity();
 			let q = Quaternion.from_euler(this.rotation);
-			let r = Matrix4x4.from_rotation(q);
+			let r = q.to_rotation_matrix();
 			let s = Matrix4x4.scale(this.scale);
 			let p = Matrix4x4.translate(this.position);
 	
@@ -52,5 +52,11 @@ export default class Transform {
 		}
 
 		return this.matrix;
+	}
+
+	public look_at(target: Vector3, up: Vector3) {
+		const look_at_matrix = Matrix4x4.look_at(this.position, target, up);
+		this.rotation = Quaternion.to_euler(look_at_matrix.to_quaternion());
+		this.dirty = true;
 	}
 }
