@@ -14,3 +14,5 @@ Per transformation matrix component caching
 	No need to recreate the rotation matrix if the rotation hasn't changed
 
 Create a dirty proxy to make marking components as dirty easier
+
+Create input manager
